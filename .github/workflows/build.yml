@@ -50,7 +50,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Yarn Audit
-        uses: jrmcdonald/yarn-audit-action@v1
+        run: yarn audit
 
       - name: Lint
         run: yarn lint
