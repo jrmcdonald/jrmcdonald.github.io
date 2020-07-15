@@ -1,0 +1,70 @@
+import { createGlobalStyle } from 'styled-components';
+
+export const Global = createGlobalStyle`
+  /* Reset from https://github.com/mike-engel/a11y-css-reset */
+
+  /* apply a natural box layout model to all elements, but allowing components to change
+   * https://www.paulirish.com/2012/box-sizing-border-box-ftw/
+   */
+  html {
+    box-sizing: border-box;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+  
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    width: 100%;
+  }
+  *:focus:not(:focus-visible),
+  *::before:focus:not(:focus-visible),
+  *::after:focus:not(:focus-visible) {
+    outline: none;
+  }
+  
+  /* https://medium.com/@matuzo/writing-css-with-accessibility-in-mind-8514a0007939 */
+  .visually-hidden {
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    margin: -1px;
+  }
+  
+  /* https://www.scottohara.me/blog/2019/01/12/lists-and-safari.html */
+  .plain-list {
+    list-style: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E");
+    padding-left: 0;
+  }
+  
+  /* prettier-ignore */
+  @media(prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  a {
+    color: rgb(0, 127, 170);
+  }
+  
+  p {
+    margin: 0
+  }
+`;
