@@ -28,6 +28,8 @@
     "typography-theme-github": "^0.16.19"
   },
   "devDependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^10.4.7",
     "babel-eslint": "^10.1.0",
@@ -80,7 +82,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn precommit"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "keywords": [
@@ -103,8 +106,6 @@
     "develop": "gatsby develop -o",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint-staged": "lint-staged",
-    "precommit": "yarn lint-staged",
     "prettier:format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "serve": "gatsby serve",
     "test": "jest"
