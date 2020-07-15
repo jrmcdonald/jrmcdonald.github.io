@@ -52,6 +52,9 @@
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5"
   },
+  "resolutions": {
+    "yargs-parser": ">=18.1.2"
+  },
   "eslintConfig": {
     "extends": [
       "wesbos"
