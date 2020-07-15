@@ -1,10 +1,9 @@
-name: lint
+name: build
 
 on:
-  pull_request:
+  push:
     branches:
-      - '*'
-      - '*/*'
+      - 'main'
 
 env:
   slack-channel: 'status-ci-cd'
@@ -31,7 +30,6 @@ jobs:
           fetch-depth: 50
       - run: |
           git fetch --no-tags --prune --depth=1 origin main
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -43,7 +41,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-
       - name: Set up Node 12
         uses: actions/setup-node@v1
         with:
@@ -60,6 +57,10 @@ jobs:
 
       - name: Test
         run: yarn test
+
+      - uses: enriikke/gatsby-gh-pages-action@v2
+        with:
+          access-token: ${{ secrets.GATSBY_PUBLISH_TOKEN }}
 
       - name: Notify Slack Success
         if: success()
