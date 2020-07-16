@@ -9,9 +9,10 @@ env:
   slack-channel: 'status-ci-cd'
 
 jobs:
-  lint:
-
+  build:
     runs-on: ubuntu-latest
+
+    if: contains(toJson(github.event.commits), '[skip ci]') == false
 
     steps:
       - name: Notify Slack Started
@@ -30,6 +31,7 @@ jobs:
           fetch-depth: 50
       - run: |
           git fetch --no-tags --prune --depth=1 origin main
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -41,6 +43,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       - name: Set up Node 12
         uses: actions/setup-node@v1
         with:
@@ -50,17 +53,13 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Yarn Audit
-        run: yarn audit
+        uses: jrmcdonald/yarn-audit-action@v1.1
 
-      - name: Lint
+      - name: Yarn Lint
         run: yarn lint
 
-      - name: Test
+      - name: Yarn Test
         run: yarn test
-
-      - uses: enriikke/gatsby-gh-pages-action@v2
-        with:
-          access-token: ${{ secrets.GATSBY_PUBLISH_TOKEN }}
 
       - name: Notify Slack Success
         if: success()
@@ -80,6 +79,60 @@ jobs:
           message_id: ${{ steps.slack.outputs.message_id }}
           channel: ${{ env.slack-channel }}
           status: BUILD FAILED
+          color: danger
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  publish:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    if: contains(github.ref, 'main') && contains(github.event_name, 'push') && contains(toJson(github.event.commits), '[skip ci]') == false
+
+    steps:
+      - name: Notify Slack Started
+        uses: voxmedia/github-action-slack-notify-build@v1
+        id: slack
+        with:
+          channel: ${{ env.slack-channel }}
+          status: PUBLISH STARTED
+          color: warning
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 50
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin main
+
+      - name: Gatsby Publish
+        uses: enriikke/gatsby-gh-pages-action@v2
+        with:
+          access-token: ${{ secrets.GATSBY_PUBLISH_TOKEN }}
+        env:
+          GATSBY_GITHUB_TOKEN = ${{ secrets.GATSBY_GITHUB_TOKEN }}
+
+      - name: Notify Slack Success
+        if: success()
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: ${{ env.slack-channel }}
+          status: PUBLISH SUCCESS
+          color: good
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify Slack Failed
+        if: failure()
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: ${{ env.slack-channel }}
+          status: PUBLISH FAILED
           color: danger
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
