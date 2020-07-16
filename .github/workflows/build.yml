@@ -113,7 +113,7 @@ jobs:
         with:
           access-token: ${{ secrets.GATSBY_PUBLISH_TOKEN }}
         env:
-          GATSBY_GITHUB_TOKEN = ${{ secrets.GATSBY_GITHUB_TOKEN }}
+          GATSBY_GITHUB_TOKEN: ${{ secrets.GATSBY_GITHUB_TOKEN }}
 
       - name: Notify Slack Success
         if: success()
