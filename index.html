@@ -88,28 +88,6 @@
 
     .mn-mark-dot { color: var(--accent); }
 
-    .mn-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .mn-status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: oklch(64% 0.18 145);
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-      .mn-status-dot { animation: mn-pulse 2.4s ease-out infinite; }
-
-      @keyframes mn-pulse {
-        0%, 100% { box-shadow: 0 0 0 0 oklch(64% 0.18 145 / 0.5); }
-        50%       { box-shadow: 0 0 0 6px oklch(64% 0.18 145 / 0); }
-      }
-    }
-
     .mn-main {
       flex: 1;
       display: flex;
@@ -303,10 +281,6 @@
     <div class="mn-shell">
       <header class="mn-top">
         <span class="mn-mark">qwyck<span class="mn-mark-dot">.</span>co<span class="mn-mark-dot">.</span>uk</span>
-        <span class="mn-status">
-          <span class="mn-status-dot" aria-hidden="true"></span>
-          Open to chat
-        </span>
       </header>
 
       <main class="mn-main">
@@ -339,9 +313,10 @@
             <span class="mn-label">Off-hours</span>
             <div class="mn-chips">
               <span class="mn-chip">family</span>
-              <span class="mn-chip">sci-fi &amp; fantasy</span>
+              <span class="mn-chip">sci-fi &amp; fantasy books</span>
               <span class="mn-chip">home automation</span>
               <span class="mn-chip">video games</span>
+              <span class="mn-chip">saltwater aquatics</span>
             </div>
           </div>
         </div>
